@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="css/nami.css" />
+        <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400:900" />
+    </head>
+    <body>
+        <div class="nami-menu">
+            <div class="nami-menu-items">
+                <div class="nami-menu-wrap">
+                    <div class="nami-menu-item nami-font1 nami-active" data-name="Home">Home</div>
+                    <div class="nami-menu-item nami-font1" data-name="About">About</div>
+                    <div class="nami-menu-item nami-font1 has-submenu" data-name="Blog">
+                        Blog
+                        <i class="ion-ios-arrow-down nami-menu-trigger"></i>
+                        <div class="nami-submenu">
+                            <div class="nami-menu-item nami-sub-item" data-name="Real Blog">Real Blog</div>
+                            <div class="nami-menu-item nami-sub-item" data-name="Fake Shit">Fake Shit</div>
+                        </div>
+                    </div>
+                    <div class="nami-menu-item nami-font1 has-submenu" data-name="More">
+                        
+                        More 
+                        <i class="ion-ios-arrow-down nami-menu-trigger"></i>
+                        <div class="nami-submenu">
+                            <div class="nami-menu-item nami-sub-item has-submenu" data-name="Careers">Careers
+                                <i class="ion-ios-arrow-down nami-menu-trigger"></i>
+                                <div class="nami-submenu">
+                                    <div class="nami-menu-item nami-sub-item" data-name="Internships">Internships</div>
+                                    <div class="nami-menu-item nami-sub-item" data-name="Full-time">Full-time</div>
+                                </div>
+                            </div>
+                            <div class="nami-menu-item nami-sub-item" data-name="Customer Care">Customer Care</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nami-bar nami-cozy">
+            <div class="nami">
+                <div class="nami-selected nami-cozy">
+                    <div class="nami-ishere nami-font1"></div>
+                    <div class="nami-ishere-arr"><i class="ion-ios-arrow-down"></i></div>
+                </div>
+            </div>
+        </div>
+        <script src="js/nami.js"></script>
+        <script src="js/demo.js"></script>
+    </body>
+</html>

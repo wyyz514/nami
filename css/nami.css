@@ -1,0 +1,133 @@
+body {
+    margin: 0 !important;
+}
+
+.nami {
+    position: relative;
+    box-sizing: border-box;
+    padding: 0 10px;
+    height: 27px;
+    line-height: 27px;
+    width: 8em;
+    top: calc(100% - 4em / 2);
+    margin: auto;
+    background-color: #cecece;
+    border-radius: 3px;
+}
+
+.nami-ishere {
+   float: left;
+   font-size: 12px;
+   overflow: hidden;
+   width: 6em;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
+
+.nami-ishere-arr {
+    float: right;    
+}
+
+.nami-bar {
+   height: 4em;
+   width: 100%;
+   box-sizing: border-box;
+   padding: 10px;
+   border-bottom: 1px solid #cecece;
+   position: absolute;
+   top: 0;
+   left: 0;
+   background-color: #fff;
+   z-index: 500;
+}
+
+.nami-menu {
+   position: fixed;
+   top: 0;
+   left: 0;
+   height: 100%;
+   width: 100%;
+   z-index: 499;
+   display: none;
+   background-color: #5E82F7;
+   transition: all 0.5s ease-in-out;
+   -webkit-transition: all 0.5s ease-in-out;
+   -ms-transition: all 0.5s ease-in-out;
+   -o-transition: all 0.5s ease-in-out;
+   -moz-transition: all 0.5s ease-in-out;
+}
+
+.nami-menu-items {
+   position: absolute;
+   max-height: 18em;
+   overflow: auto;
+   top: calc((100% - 8em) / 2);
+   width: 90%;
+   left: 5%;
+}
+
+.nami-menu-item:nth-child(1) {
+    /*border-top: 1px solid #5470c4;    */
+}
+
+.nami-menu-item {
+    min-height: 3em;
+    height: auto;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+    color: #fff;
+    /*border-bottom: 1px solid #5470c4;*/
+}
+
+.nami-menu-item i {
+   float: right;
+}
+
+.nami-menu-wrap {
+    
+}
+
+.nami-font1 {
+    font-family: "Source Sans Pro";
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.nami-submenu {
+    
+}
+
+.nami-sub-item:nth-child(1) {
+    margin-top: 10px;    
+}
+
+.nami-sub-item {
+   border: none !important;
+   font-size: 10px;
+}
+
+.has-submenu {
+   
+}
+
+.nami-submenu {
+    display: none;
+}
+
+.menu-open {
+    display: block;
+}
+
+.nami-active:after {
+    content:"";
+    position: absolute;
+    top: 80%;
+    left: 10px;
+    background-color: #fff;
+    height: 2px;
+    width: 20px;
+}
