@@ -1,31 +1,52 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400:900");
+
 body {
     margin: 0 !important;
 }
 
-.nami {
+.nami-bar-wrap {
     position: relative;
     box-sizing: border-box;
     padding: 0 10px;
     height: 27px;
     line-height: 27px;
-    width: 8em;
-    top: calc(100% - 4em / 2);
-    margin: auto;
+    width: 9em;
+    max-width: 9em;
+    min-width: 7em;
     background-color: #cecece;
     border-radius: 3px;
+    overflow: hidden;
 }
 
 .nami-ishere {
    float: left;
    font-size: 12px;
    overflow: hidden;
-   width: 6em;
+   width: 95%;
    text-overflow: ellipsis;
+   top: 0;
+   position: relative;
    white-space: nowrap;
+   transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
+}
+
+.updating {
+    top: -100px;
 }
 
 .nami-ishere-arr {
     float: right;    
+    cursor: pointer;
+    width: 5%;
+}
+
+.nami-menu-trigger {
+    cursor: pointer;    
+    color: inherit;
+}
+
+.nami-ishere-arr i {
+    font-size: 10px;
 }
 
 .nami-bar {
@@ -34,11 +55,41 @@ body {
    box-sizing: border-box;
    padding: 10px;
    border-bottom: 1px solid #cecece;
-   position: absolute;
+   position: fixed;
    top: 0;
    left: 0;
    background-color: #fff;
+   display: -webkit-box;
+   display: -webkit-flex;
+   display: -moz-flex;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-flex-direction: row;
+   -moz-flex-direction: row;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-box-direction: normal;
+   -webkit-box-orient: horizontal;
+   align-items: center;
+   -webkit-align-items: center;
+   -moz-align-items: center;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
    z-index: 500;
+}
+
+.nami-bar > div {
+    flex-grow: 1;
+}
+
+.nami-bar-logo {
+    height: 32px;
+    display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flexbox;
+	display: flex;
+    align-items: center;
 }
 
 .nami-menu {
@@ -66,10 +117,6 @@ body {
    left: 5%;
 }
 
-.nami-menu-item:nth-child(1) {
-    /*border-top: 1px solid #5470c4;    */
-}
-
 .nami-menu-item {
     min-height: 3em;
     height: auto;
@@ -79,15 +126,10 @@ body {
     padding: 10px;
     font-size: 14px;
     color: #fff;
-    /*border-bottom: 1px solid #5470c4;*/
 }
 
 .nami-menu-item i {
    float: right;
-}
-
-.nami-menu-wrap {
-    
 }
 
 .nami-font1 {
@@ -95,10 +137,6 @@ body {
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
-}
-
-.nami-submenu {
-    
 }
 
 .nami-sub-item:nth-child(1) {
@@ -110,24 +148,10 @@ body {
    font-size: 10px;
 }
 
-.has-submenu {
-   
-}
-
 .nami-submenu {
     display: none;
 }
 
 .menu-open {
     display: block;
-}
-
-.nami-active:after {
-    content:"";
-    position: absolute;
-    top: 80%;
-    left: 10px;
-    background-color: #fff;
-    height: 2px;
-    width: 20px;
 }

@@ -4,50 +4,178 @@
         <meta charset="utf8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="css/nami.css" />
-        <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400:900" />
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ceviche+One|Source+Sans+Pro:400:700" />
     </head>
     <body>
         <div class="nami-menu">
             <div class="nami-menu-items">
                 <div class="nami-menu-wrap">
-                    <div class="nami-menu-item nami-font1 nami-active" data-name="Home">Home</div>
-                    <div class="nami-menu-item nami-font1" data-name="About">About</div>
-                    <div class="nami-menu-item nami-font1 has-submenu" data-name="Blog">
-                        Blog
-                        <i class="ion-ios-arrow-down nami-menu-trigger"></i>
+                    <div class="nami-menu-item nami-font1 nami-active" data-name="Home" data-target="#top">Home</div>
+                    <div class="nami-menu-item nami-font1" data-name="About" data-target="#about">About</div>
+                    <div class="nami-menu-item nami-font1 has-submenu" data-name="Instructions" data-target="#instructions">
+                        Instructions 
+                        <i class="nami-menu-trigger">&#9660;</i>
                         <div class="nami-submenu">
-                            <div class="nami-menu-item nami-sub-item" data-name="Real Blog">Real Blog</div>
-                            <div class="nami-menu-item nami-sub-item" data-name="Fake Shit">Fake Shit</div>
-                        </div>
-                    </div>
-                    <div class="nami-menu-item nami-font1 has-submenu" data-name="More">
-                        
-                        More 
-                        <i class="ion-ios-arrow-down nami-menu-trigger"></i>
-                        <div class="nami-submenu">
-                            <div class="nami-menu-item nami-sub-item has-submenu" data-name="Careers">Careers
-                                <i class="ion-ios-arrow-down nami-menu-trigger"></i>
-                                <div class="nami-submenu">
-                                    <div class="nami-menu-item nami-sub-item" data-name="Internships">Internships</div>
-                                    <div class="nami-menu-item nami-sub-item" data-name="Full-time">Full-time</div>
-                                </div>
-                            </div>
-                            <div class="nami-menu-item nami-sub-item" data-name="Customer Care">Customer Care</div>
+                            <div class="nami-menu-item nami-sub-item" data-name="Installation">Installation</div>
+                            <div class="nami-menu-item nami-sub-item" data-name="Building a Basic Menu">Building a Basic Menu</div>
+                            <div class="nami-menu-item nami-sub-item" data-name="Events">Events</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="nami-bar nami-cozy">
-            <div class="nami">
-                <div class="nami-selected nami-cozy">
+        <div class="nami-bar">
+            <div class="nami-bar-logo" id="demo-logo">Nami</div>
+            <div class="nami-bar-wrap">
+                <div class="nami-selected">
                     <div class="nami-ishere nami-font1"></div>
-                    <div class="nami-ishere-arr"><i class="ion-ios-arrow-down"></i></div>
+                    <div class="nami-ishere-arr"><i>&#9660</i></div>
                 </div>
             </div>
         </div>
+        <div class="demo-content" id="top">
+            <div class="demo-bg">
+                <div class="demo-title">Nami</div>
+                <div class="demo-blurb">kawaii, flexible, customizable menu</div>
+            </div>
+            <div class="demo-section" id="about">
+                <div class="demo-section-title">About</div>
+                <div class="demo-section-body">
+                    Nami is intended to be a flexible, customizable menu for use in your website. Out of the box, Nami provides
+                    basic menu functionality. All you need to do is add the markup for your desired menu items. Nami also allows
+                    you to add events to the menu items. We'll see this shortly.
+                </div>
+            </div>
+            
+            <div class="demo-section"  id="instructions">
+                <div class="demo-section-title">Instructions</div>
+                <div class="demo-section-body">
+                    
+                   <div class="demo-sub-section">
+                       <div class="demo-sub-section-title">Installation</div>
+                       <div class="demo-sub-section-body">Coming Soon</div>
+                   </div>
+                   <div class="demo-sub-section">
+                       <div class="demo-sub-section-title">Creating a Basic Menu</div>
+                       <div class="demo-sub-section-body">Coming Soon</div>
+                   </div>
+                   <div class="demo-sub-section">
+                       <div class="demo-sub-section-title">Events</div>
+                       <div class="demo-sub-section-body">Coming Soon</div>
+                   </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            #demo-logo {
+                font-family: "Ceviche One";
+                font-size: 24px;
+                color: #5E82F7;
+            }
+            
+            .demo-content {
+                height: auto;
+                min-height: 75em;
+                width: 80%;
+                margin: auto;
+                margin-top: 4em;
+            }
+        
+            .demo-bg {
+                position: relative;
+                height: 15em;
+                width: 100%;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: -moz-flex;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-flex-direction: column;
+                -moz-flex-direction: column;
+                -ms-flex-direction: column;
+                flex-direction: column;
+                -webkit-box-direction: reverse;
+                -webkit-box-orient: vertical;
+                align-items: center;
+                -webkit-align-items: center;
+                -moz-align-items: center;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                -webkit-justify-content: center;
+                -webkit-box-pack: center;
+		        -ms-flex-pack: center;
+            	-moz-justify-content: center;
+	            justify-content: center;
+                color: #5E82F7;
+                margin-bottom: 50px;
+            }
+            
+            .demo-bg:after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                height: 3px;
+                width: 1em;
+                left: calc((100% - 1em) / 2);
+                background-color: #5E82F7;
+            }
+            
+            .demo-title {
+                font-family: "Ceviche One";
+                font-size: 32px;
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+                padding: 10px;
+            }
+            
+            .demo-blurb {
+                font-family: "Source Sans Pro";
+                width: 100%;
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            .demo-section {
+                margin-top: 20px;
+                width: 100%;
+                height: auto;
+                min-height: 10em;
+                font-family: "Source Sans Pro";
+                margin-bottom: 20px;
+            }
+            
+            .demo-section-title {
+                color: #5E82F7;
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            
+            .demo-section-body {
+                font-size: 16px;    
+            }
+            
+            .demo-sub-section {
+                height: auto;
+                min-height: 5em;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .demo-sub-section > div {
+                text-indent: 20px;    
+            }
+            
+            .demo-sub-section-title {
+                color: #5E82F7;
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+            
+            .demo-sub-section-body {
+                font-size: 12px;
+            }
+        </style>
         <script src="js/nami.js"></script>
-        <script src="js/demo.js"></script>
     </body>
 </html>
