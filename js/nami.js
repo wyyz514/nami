@@ -102,7 +102,7 @@ window.Nami = (function(){
             setTimeout(function(){
                display.classList.remove("updating"); 
                display.innerText = textUpdate;
-            }, 500);
+            }, 200);
         }
         
         //closes NamiMenu
@@ -130,10 +130,44 @@ window.Nami = (function(){
             
             if(scrollTarget) {
                 var offset = scrollTarget.offsetTop;
-                if(window.scrollY >= offset - 50 && window.scrollY < offset + 50) {
+                var height = scrollTarget.getBoundingClientRect().height;
+                
+                if(window.scrollY >= offset - 50 && window.scrollY < offset + height) {
                     updateNamiDisplay.call(this, {stopPropagation: function noop(){}});
                 }
             }
+        }
+        
+        function namiScroll() {
+            var current = window.scrollY;
+            var scrollTarget = document.querySelector(this.scrollTarget);
+            var destination = scrollTarget.offsetTop;
+            var scrollDirection = current > destination ? "UP" : "DOWN";
+            var reqId;
+            var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || function (fn) {
+                setInterval(fn, 1000/60);
+            }
+            function scroll() {
+                //console.log("Current: ", current, "Destination:", destination, "reqId:", reqId);
+                
+                if((current >= destination && scrollDirection === "DOWN") || (current <= destination && scrollDirection === "UP")) {
+                    cancelAnimationFrame(reqId);   
+                    return;
+                }
+                
+                if(scrollDirection === "UP") {
+                    current = current - 5;
+                    window.scrollTo(0, current);
+                }
+                else {
+                    current = current + 5;
+                    window.scrollTo(0, current);
+                }
+                
+                reqid = rAF(scroll);
+            }
+            
+            reqId = rAF(scroll);
         }
         
         var menuKeys = Object.keys(Nami.menu);
@@ -145,7 +179,7 @@ window.Nami = (function(){
                 NamiEvents.register("updateDisplayOnScroll", menuItem.text, "scroll", updateDisplayOnScroll.bind(menuItem), "document");
             if(menuItem.text !== "default") {
                 //should change to scroll
-                NamiEvents.register("updateDisplay", menuItem.text, "click", updateNamiDisplay.bind(menuItem));
+                NamiEvents.register("namiScroll", menuItem.text, "click", namiScroll.bind(menuItem));
                 NamiEvents.register("closeMenu", menuItem.text, "click", closeMenu);
                 
                 if(menuItem.next != null) {

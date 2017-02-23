@@ -11,7 +11,7 @@
             <div class="nami-menu-items">
                 <div class="nami-menu-wrap">
                     <div class="nami-menu-item nami-font1 nami-active" data-name="Home" data-target="#top">Home</div>
-                    <div class="nami-menu-item nami-font1" data-name="About" data-target="#about">About</div>
+                    <div class="nami-menu-item nami-font1" data-name="About" data-target="#about"><a href="#about">About</a></div>
                     <div class="nami-menu-item nami-font1 has-submenu" data-name="Instructions" data-target="#instructions">
                         Instructions 
                         <i class="nami-menu-trigger">&#9660;</i>
@@ -33,8 +33,8 @@
                 </div>
             </div>
         </div>
-        <div class="demo-content" id="top">
-            <div class="demo-bg">
+        <div class="demo-content">
+            <div class="demo-bg" id="top">
                 <div class="demo-title">Nami</div>
                 <div class="demo-blurb">kawaii, flexible, customizable menu</div>
             </div>
@@ -107,7 +107,7 @@
             	-moz-justify-content: center;
 	            justify-content: center;
                 color: #5E82F7;
-                margin-bottom: 50px;
+                margin-bottom: 90px;
             }
             
             .demo-bg:after {
@@ -139,6 +139,8 @@
             .demo-section {
                 margin-top: 20px;
                 width: 100%;
+                padding-top: 20px;
+                box-sizing: border-box;
                 height: auto;
                 min-height: 10em;
                 font-family: "Source Sans Pro";
@@ -173,7 +175,7 @@
             }
             
             .demo-sub-section-body {
-                font-size: 12px;
+                font-size: 14px;
             }
         </style>
         <script src="js/nami.js"></script>

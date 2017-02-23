@@ -24,14 +24,14 @@ body {
    overflow: hidden;
    width: 95%;
    text-overflow: ellipsis;
-   top: 0;
+   transform: translateY(0);
    position: relative;
    white-space: nowrap;
    transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
 }
 
 .updating {
-    top: -100px;
+    transform: translateY(-100px);
 }
 
 .nami-ishere-arr {
@@ -79,7 +79,13 @@ body {
 }
 
 .nami-bar > div {
-    flex-grow: 1;
+    -webkit-box-flex: 1;
+	-webkit-flex-grow: 1;
+	-moz-flex-grow: 1;
+	-moz-box-flex: 1;
+	-ms-box-flex: 1;
+	-ms-flex-positive: 1;
+	flex-grow: 1;
 }
 
 .nami-bar-logo {
