@@ -14,6 +14,7 @@ window.Nami = (function(){
         }
     };
     
+    var navbarHeight = 64; // in px
     var namiMenuSelector = ".nami-menu .nami-menu-items";
     var namiMenuItemSelector = ".nami-menu-item";
     var namiSubMenuSelector = ".nami-submenu";
@@ -132,7 +133,7 @@ window.Nami = (function(){
                 var offset = scrollTarget.offsetTop;
                 var height = scrollTarget.getBoundingClientRect().height;
                 
-                if(window.scrollY >= offset - 50 && window.scrollY < offset + height) {
+                if(window.scrollY >= offset - navbarHeight && window.scrollY < offset + height) {
                     updateNamiDisplay.call(this, {stopPropagation: function noop(){}});
                 }
             }
@@ -141,7 +142,7 @@ window.Nami = (function(){
         function namiScroll() {
             var current = window.scrollY;
             var scrollTarget = document.querySelector(this.scrollTarget);
-            var destination = scrollTarget.offsetTop;
+            var destination = scrollTarget.offsetTop - navbarHeight;
             var scrollDirection = current > destination ? "UP" : "DOWN";
             var reqId;
             var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || function (fn) {
