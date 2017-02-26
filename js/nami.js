@@ -133,7 +133,7 @@ window.Nami = (function(){
                 var offset = scrollTarget.offsetTop;
                 var height = scrollTarget.getBoundingClientRect().height;
                 
-                if(window.scrollY >= offset - navbarHeight && window.scrollY < offset + height) {
+                if(window.scrollY >= offset - navbarHeight && window.scrollY < offset + height - navbarHeight) {
                     updateNamiDisplay.call(this, {stopPropagation: function noop(){}});
                 }
             }

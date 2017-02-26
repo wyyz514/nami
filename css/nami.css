@@ -18,23 +18,32 @@ body {
     overflow: hidden;
 }
 
-.nami-ishere {
+.nami-location {
    float: left;
    font-size: 12px;
    overflow: hidden;
    width: 95%;
    text-overflow: ellipsis;
    transform: translateY(0);
+   -webkit-transform: translateY(0);
+   -moz-transform: translateY(0);
+   -ms-transform: translateY(0);
    position: relative;
    white-space: nowrap;
    transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
+   -webkit-transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
+   -moz-transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
+   -ms-transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
 }
 
 .updating {
     transform: translateY(-100px);
+   -webkit-transform: translateY(-100px);
+   -moz-transform: translateY(-100px);
+   -ms-transform: translateY(-100px);
 }
 
-.nami-ishere-arr {
+.nami-location-arr {
     float: right;    
     cursor: pointer;
     width: 5%;
