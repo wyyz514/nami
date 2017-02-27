@@ -82,7 +82,7 @@ window.Nami = (function(){
         extractMenuItems(namiMenuSelector);
         NamiEvents.register("toggleMenu", "default", "click", toggleMenu);
         attachMenuItemListeners();
-        var display = document.querySelector(".nami-ishere");
+        var display = document.querySelector(".nami-location");
         display.innerText = active;
     }
     
