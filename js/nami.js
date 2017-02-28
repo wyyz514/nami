@@ -90,7 +90,7 @@ window.Nami = (function(){
         //update display in nami bar
         function updateNamiDisplay(e) {
             e.stopPropagation();
-            var display = document.querySelector(".nami-ishere");
+            var display = document.querySelector(".nami-location");
             var currentText = display.innerText;
 
             if(currentText.toLowerCase() === this.text.toLowerCase()) {

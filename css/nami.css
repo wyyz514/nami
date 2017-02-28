@@ -22,7 +22,7 @@ body {
    float: left;
    font-size: 12px;
    overflow: hidden;
-   width: 95%;
+   width: 90%;
    text-overflow: ellipsis;
    transform: translateY(0);
    -webkit-transform: translateY(0);
@@ -46,7 +46,8 @@ body {
 .nami-location-arr {
     float: right;    
     cursor: pointer;
-    width: 5%;
+    width: 10%;
+    text-align: center;
 }
 
 .nami-menu-trigger {
