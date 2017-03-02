@@ -31,9 +31,9 @@ body {
    position: relative;
    white-space: nowrap;
    transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
-   -webkit-transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
-   -moz-transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
-   -ms-transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
+   -webkit-transition: all 0.5s cubic-bezier(.79,.27,.43,.6);
+   -moz-transition: all 0.5s cubic-bezier(.79,.27,.43,.6);
+   -ms-transition: all 0.5s cubic-bezier(.79,.27,.43,.6);
 }
 
 .updating {
@@ -53,10 +53,6 @@ body {
 .nami-menu-trigger {
     cursor: pointer;    
     color: inherit;
-}
-
-.nami-ishere-arr i {
-    font-size: 10px;
 }
 
 .nami-bar {
@@ -144,11 +140,16 @@ body {
     color: #fff;
 }
 
+.nami-menu-item a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .nami-menu-item i {
    float: right;
 }
 
-.nami-font1 {
+.nami-font {
     font-family: "Source Sans Pro";
     font-weight: 900;
     text-transform: uppercase;

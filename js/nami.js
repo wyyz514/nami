@@ -7,18 +7,23 @@ window.Nami = (function(){
     
     var Nami = {
         menu: {
-            "default": {
-                text: "default",
+            "selected": {
+                text: "selected",
                 el: document.querySelector(".nami-selected")
+            },
+            "menu-view": {
+                text: "menu-view",
+                el: document.querySelector(".nami-menu")
             }
         }
     };
     
     var navbarHeight = 64; // in px
-    var namiMenuSelector = ".nami-menu .nami-menu-items";
+    var namiMenuSelector = ".nami-menu";
+    var namiMenuItemsSelector = namiMenuSelector + " " + ".nami-menu-items";
     var namiMenuItemSelector = ".nami-menu-item";
     var namiSubMenuSelector = ".nami-submenu";
-    var namiSubMenuItemSelector = namiSubMenuSelector + " .nami-sub-item";
+    var namiSubMenuItemSelector = namiSubMenuSelector + " " + ".nami-sub-item";
     
     function addItem(key, item) {
         if(!Nami.menu[key]) {
@@ -69,7 +74,7 @@ window.Nami = (function(){
     }
     
     function toggleMenu(e) {
-        e.stopPropagation() || (e.cancelBubble = true);
+        preventEventLeak(e);
         var namiMenu = document.querySelector(".nami-menu");
         if(!namiMenu.classList.contains("menu-open")) {
             namiMenu.classList.add("menu-open");
@@ -78,9 +83,13 @@ window.Nami = (function(){
             namiMenu.classList.remove("menu-open");
     }
     
+    function preventEventLeak(e) {
+        NamiEvents.preventEventLeak(e);
+    } 
+    
     function run() {
-        extractMenuItems(namiMenuSelector);
-        NamiEvents.register("toggleMenu", "default", "click", toggleMenu);
+        extractMenuItems(namiMenuItemsSelector);
+        NamiEvents.register("toggleMenu", "selected", "click", toggleMenu);
         attachMenuItemListeners();
         var display = document.querySelector(".nami-location");
         display.innerText = active;
@@ -89,7 +98,7 @@ window.Nami = (function(){
     function attachMenuItemListeners() {
         //update display in nami bar
         function updateNamiDisplay(e) {
-            e.stopPropagation();
+            preventEventLeak(e);
             var display = document.querySelector(".nami-location");
             var currentText = display.innerText;
 
@@ -103,12 +112,12 @@ window.Nami = (function(){
             setTimeout(function(){
                display.classList.remove("updating"); 
                display.innerText = textUpdate;
-            }, 200);
+            }, 500);
         }
         
         //closes NamiMenu
         function closeMenu(e) {
-            e.stopPropagation() || (e.cancelBubble = true);
+            preventEventLeak(e);
             var namiMenu = document.querySelector(".nami-menu");
             if(namiMenu.classList.contains("menu-open")) {
                 namiMenu.classList.remove("menu-open");
@@ -118,7 +127,7 @@ window.Nami = (function(){
         
         //toggles submenus by binding to respective menu item (see below)
         function toggleSubMenu(e) {
-            e.stopPropagation();
+            preventEventLeak(e);
             var subMenu = this.el.querySelector(".nami-submenu");
             if(!subMenu.classList.contains("menu-open"))
                 subMenu.classList.add("menu-open");
@@ -127,32 +136,36 @@ window.Nami = (function(){
         }
         
         function updateDisplayOnScroll(e) {
+            preventEventLeak(e);
             var scrollTarget = document.querySelector(this.scrollTarget);
             
             if(scrollTarget) {
                 var offset = scrollTarget.offsetTop;
                 var height = scrollTarget.getBoundingClientRect().height;
-                
-                if(window.scrollY >= offset - navbarHeight && window.scrollY < offset + height - navbarHeight) {
-                    updateNamiDisplay.call(this, {stopPropagation: function noop(){}});
+                var pageScrolled = window.scrollY || window.pageYOffset;
+                if(pageScrolled >= offset - navbarHeight && pageScrolled <= offset + height - navbarHeight) {
+                    updateNamiDisplay.call(this, e);
                 }
             }
         }
         
-        function namiScroll() {
-            var current = window.scrollY;
+        function namiScroll(e) {
+            preventEventLeak(e);
+            var current = window.scrollY || window.pageYOffset;
             var scrollTarget = document.querySelector(this.scrollTarget);
             var destination = scrollTarget.offsetTop - navbarHeight;
             var scrollDirection = current > destination ? "UP" : "DOWN";
-            var reqId;
-            var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || function (fn) {
+            var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
                 setInterval(fn, 1000/60);
-            }
+            };
+            var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame;
+            var reqId;
+            
             function scroll() {
                 //console.log("Current: ", current, "Destination:", destination, "reqId:", reqId);
                 
                 if((current >= destination && scrollDirection === "DOWN") || (current <= destination && scrollDirection === "UP")) {
-                    cancelAnimationFrame(reqId);   
+                    cAF(reqId);   
                     return;
                 }
                 
@@ -165,7 +178,7 @@ window.Nami = (function(){
                     window.scrollTo(0, current);
                 }
                 
-                reqid = rAF(scroll);
+                reqId = rAF(scroll);
             }
             
             reqId = rAF(scroll);
@@ -173,14 +186,14 @@ window.Nami = (function(){
         
         var menuKeys = Object.keys(Nami.menu);
         
-        //attach the updateDisplay, closeMenu and toggleSubmenu listeners to all menu items except default which toggles the main menu
+        //attach the updateDisplay, closeMenu and toggleSubmenu listeners to all menu items except selected which toggles the main menu
         menuKeys.forEach(function(menuKey){
             var menuItem = Nami.getItem(menuKey);
-            if(menuItem.scrollTarget)
+            if(menuItem.scrollTarget) {
                 NamiEvents.register("updateDisplayOnScroll", menuItem.text, "scroll", updateDisplayOnScroll.bind(menuItem), "document");
-            if(menuItem.text !== "default") {
-                //should change to scroll
                 NamiEvents.register("namiScroll", menuItem.text, "click", namiScroll.bind(menuItem));
+            }
+            if(menuItem.text !== "selected") {
                 NamiEvents.register("closeMenu", menuItem.text, "click", closeMenu);
                 
                 if(menuItem.next != null) {
@@ -201,6 +214,23 @@ window.Nami = (function(){
 
 window.NamiEvents = (function(){
     var events = {};
+    
+    //source: http://ejohn.org/projects/flexible-javascript-events/
+    function addEvent( obj, type, fn ) {
+      if ( obj.attachEvent ) {
+        obj['e'+type+fn] = fn;
+        obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
+        obj.attachEvent( 'on'+type, obj[type+fn] );
+      } else
+        obj.addEventListener( type, fn, false );
+    }
+    function removeEvent( obj, type, fn ) {
+      if ( obj.detachEvent ) {
+        obj.detachEvent( 'on'+type, obj[type+fn] );
+        obj[type+fn] = null;
+      } else
+        obj.removeEventListener( type, fn, false );
+    }
     
     function register(event, trigger, domEvent, cb) {
         var wantedTrigger = arguments[4] || null;
@@ -224,14 +254,14 @@ window.NamiEvents = (function(){
         
         if(wantedTrigger && wantedTrigger !== "document") {
             var wantedTriggerEl = Nami.getItem(trigger).el.querySelector(wantedTrigger);
-            wantedTriggerEl.addEventListener(domEvent, eventOb.cb);
+            addEvent(wantedTriggerEl, domEvent, eventOb.cb);
         }
         else if(wantedTrigger && wantedTrigger === "document") {
-            document.addEventListener(domEvent, eventOb.cb);
+            addEvent(document, domEvent, eventOb.cb);
         }
         else {
             var specifiedTriggerEl = Nami.getItem(trigger).el;
-            specifiedTriggerEl.addEventListener(domEvent, eventOb.cb);
+            addEvent(specifiedTriggerEl, domEvent, eventOb.cb);
         }
     }
     
@@ -245,10 +275,10 @@ window.NamiEvents = (function(){
                 var menuItem = Nami.getItem(trigger);
                 console.log("Removing ", event + " listener on", trigger);
                 if(menuItem.wantedTrigger === "document")
-                    document.removeEventListener(domEvent || "click", listener.cb);
+                    removeEvent(document, domEvent, listener.cb);
                 else if(menuItem.wantedTrigger) {
                     var el = menuItem.el.querySelector(menuItem.wantedTrigger);
-                    el.removeEventListener(domEvent || "click", listener.cb);
+                    removeEvent(el, domEvent, listener.cb);
                 }
                 listeners.splice(listeners.indexOf(listener), 1);
             }
@@ -271,11 +301,14 @@ window.NamiEvents = (function(){
         })
     }
     
-    
+    function preventEventLeak(e) {
+        e.stopPropagation() || (e.cancelBubble = true);
+    }
     return {
         register: register, 
         deregister: deregister,
         events: events,
+        preventEventLeak: preventEventLeak,
         fire: fire
     }
 })()

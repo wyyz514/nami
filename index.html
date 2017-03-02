@@ -10,13 +10,13 @@
         <div class="nami-menu">
             <div class="nami-menu-items">
                 <div class="nami-menu-wrap">
-                    <div class="nami-menu-item nami-font1 nami-active" data-name="Home" data-target="#top">Home</div>
-                    <div class="nami-menu-item nami-font1" data-name="About" data-target="#about"><a href="#about">About</a></div>
-                    <div class="nami-menu-item nami-font1 has-submenu" data-name="Instructions" data-target="#instructions">
+                    <div class="nami-menu-item nami-font nami-active" data-name="Home" data-target="#top">Home</div>
+                    <div class="nami-menu-item nami-font" data-name="About" data-target="#about"><a href="#about">About</a></div>
+                    <div class="nami-menu-item nami-font has-submenu" data-name="Instructions" data-target="#instructions">
                         Instructions 
                         <i class="nami-menu-trigger">&#9660;</i>
                         <div class="nami-submenu">
-                            <div class="nami-menu-item nami-sub-item" data-name="Installation">Installation</div>
+                            <div class="nami-menu-item nami-sub-item" data-name="Installation" data-target="#installation">Installation</div>
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
             <div class="nami-bar-logo" id="demo-logo">Nami</div>
             <div class="nami-bar-wrap">
                 <div class="nami-selected">
-                    <div class="nami-location nami-font1"></div>
+                    <div class="nami-location nami-font"></div>
                     <div class="nami-location-arr">&#9776;</div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="demo-section-title">Instructions</div>
                 <div class="demo-section-body">
                     
-                   <div class="demo-sub-section">
+                   <div class="demo-sub-section" id="installation">
                        <div class="demo-sub-section-title">Installation</div>
                        <div class="demo-sub-section-body">
                            <code>npm install nami-chan</code>
@@ -72,7 +72,7 @@
             
             .demo-content {
                 height: auto;
-                min-height: 75em;
+                min-height: 95em;
                 width: 80%;
                 margin: auto;
                 margin-top: 4em;
@@ -133,15 +133,18 @@
                 text-align: center;
             }
             
-            .demo-section {
+            .demo-section, .demo-sub-section {
                 margin-top: 20px;
-                width: 100%;
-                padding-top: 20px;
+                margin-bottom: 20px;
                 box-sizing: border-box;
+                padding-top: 20px;    
+            }
+            
+            .demo-section {
+                width: 100%;
                 height: auto;
                 min-height: 10em;
                 font-family: "Source Sans Pro";
-                margin-bottom: 20px;
             }
             
             .demo-section-title {
@@ -157,8 +160,6 @@
             .demo-sub-section {
                 height: auto;
                 min-height: 5em;
-                margin-top: 10px;
-                margin-bottom: 10px;
             }
             
             .demo-sub-section > div {
