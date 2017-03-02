@@ -31,9 +31,9 @@ body {
    position: relative;
    white-space: nowrap;
    transition: all 0.2s cubic-bezier(.79,.27,.43,.6);
-   -webkit-transition: all 0.5s cubic-bezier(.79,.27,.43,.6);
-   -moz-transition: all 0.5s cubic-bezier(.79,.27,.43,.6);
-   -ms-transition: all 0.5s cubic-bezier(.79,.27,.43,.6);
+   -webkit-transition: all 0.3s cubic-bezier(.79,.27,.43,.6);
+   -moz-transition: all 0.3s cubic-bezier(.79,.27,.43,.6);
+   -ms-transition: all 0.3s cubic-bezier(.79,.27,.43,.6);
 }
 
 .updating {
