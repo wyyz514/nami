@@ -155,14 +155,15 @@ window.Nami = (function(){
             var scrollTarget = document.querySelector(this.scrollTarget);
             var destination = scrollTarget.offsetTop - navbarHeight;
             var scrollDirection = current > destination ? "UP" : "DOWN";
+            var clearAnimationLoop = "";
             var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
-                setInterval(fn, 1000/60);
+                clearAnimationLoop = setInterval(fn, 1000/60);
             };
-            var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame;
+            var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
             var reqId;
             
             function scroll() {
-                //console.log("Current: ", current, "Destination:", destination, "reqId:", reqId);
+                console.log("Current: ", current, "Destination:", destination, "Direction:", scrollDirection);
                 
                 if((current >= destination && scrollDirection === "DOWN") || (current <= destination && scrollDirection === "UP")) {
                     cAF(reqId);   
@@ -170,11 +171,11 @@ window.Nami = (function(){
                 }
                 
                 if(scrollDirection === "UP") {
-                    current = current - 5;
+                    current = current - 5 <= destination ? destination : current - 5;
                     window.scrollTo(0, current);
                 }
                 else {
-                    current = current + 5;
+                    current = current + 5 >= destination ? destination : current + 5;
                     window.scrollTo(0, current);
                 }
                 
