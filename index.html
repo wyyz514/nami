@@ -24,7 +24,7 @@
         </div>
         <div class="nami-bar">
             <div class="nami-bar-logo" id="demo-logo">Nami</div>
-            <div class="nami-bar-wrap">
+            <div class="nami-display">
                 <div class="nami-selected">
                     <div class="nami-location nami-font"></div>
                     <div class="nami-location-arr">&#9776;</div>
@@ -177,5 +177,27 @@
             }
         </style>
         <script src="js/nami.js"></script>
+        <script>
+            var barConfig = {
+                backgroundColor: "#fff",
+                borderBottom: "none"
+            };
+            
+            var menuConfig = {
+                color: "#5E82F7",
+                backgroundColor: "#fff"
+            }
+            
+            var displayConfig = {
+                backgroundColor: "#fff",
+                color: "#5E82F7"
+            };
+            
+            var opts = {};
+            opts["bar"] = barConfig;
+            opts["display"] = displayConfig;
+            opts["menu"] = menuConfig;
+            Nami.updateConfig(opts);
+        </script>
     </body>
 </html>

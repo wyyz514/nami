@@ -4,7 +4,7 @@ body {
     margin: 0 !important;
 }
 
-.nami-bar-wrap {
+.nami-display {
     position: relative;
     box-sizing: border-box;
     padding: 0 10px;
@@ -23,6 +23,7 @@ body {
    font-size: 12px;
    overflow: hidden;
    width: 90%;
+   color: inherit;
    text-overflow: ellipsis;
    transform: translateY(0);
    -webkit-transform: translateY(0);
@@ -48,6 +49,7 @@ body {
     cursor: pointer;
     width: 10%;
     text-align: center;
+    color: inherit;
 }
 
 .nami-menu-trigger {
@@ -137,7 +139,7 @@ body {
     box-sizing: border-box;
     padding: 10px;
     font-size: 14px;
-    color: #fff;
+    color: inherit;
 }
 
 .nami-menu-item a {

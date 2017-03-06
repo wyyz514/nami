@@ -5,6 +5,15 @@ window.Nami = (function(){
     
     var active = document.querySelector(".nami-active") ? document.querySelector(".nami-active").getAttribute("data-name") : null;
     
+    var navbarHeight = 64; // in px
+    var namiMenuSelector = ".nami-menu";
+    var namiBarSelector = ".nami-bar";
+    var namiDisplaySelector = ".nami-display";
+    var namiMenuItemsSelector = namiMenuSelector + " " + ".nami-menu-items";
+    var namiMenuItemSelector = ".nami-menu-item";
+    var namiSubMenuSelector = ".nami-submenu";
+    var namiSubMenuItemSelector = namiSubMenuSelector + " " + ".nami-sub-item";
+    
     var Nami = {
         menu: {
             "selected": {
@@ -13,17 +22,10 @@ window.Nami = (function(){
             },
             "menu-view": {
                 text: "menu-view",
-                el: document.querySelector(".nami-menu")
+                el: document.querySelector(namiMenuSelector)
             }
         }
     };
-    
-    var navbarHeight = 64; // in px
-    var namiMenuSelector = ".nami-menu";
-    var namiMenuItemsSelector = namiMenuSelector + " " + ".nami-menu-items";
-    var namiMenuItemSelector = ".nami-menu-item";
-    var namiSubMenuSelector = ".nami-submenu";
-    var namiSubMenuItemSelector = namiSubMenuSelector + " " + ".nami-sub-item";
     
     function addItem(key, item) {
         if(!Nami.menu[key]) {
@@ -75,7 +77,7 @@ window.Nami = (function(){
     
     function toggleMenu(e) {
         preventEventLeak(e);
-        var namiMenu = document.querySelector(".nami-menu");
+        var namiMenu = document.querySelector(namiMenuSelector);
         if(!namiMenu.classList.contains("menu-open")) {
             namiMenu.classList.add("menu-open");
         }
@@ -154,7 +156,7 @@ window.Nami = (function(){
             var current = window.scrollY || window.pageYOffset;
             var scrollTarget = document.querySelector(this.scrollTarget);
             var destination = scrollTarget.offsetTop - navbarHeight;
-            var scrollDirection = current > destination ? "UP" : "DOWN";
+            var scrollDirection = "STATIC";
             var clearAnimationLoop = "";
             var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
                 clearAnimationLoop = setInterval(fn, 1000/60);
@@ -162,8 +164,14 @@ window.Nami = (function(){
             var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
             var reqId;
             
+            if(current < destination) 
+                scrollDirection = "DOWN";
+            else if(current > destination)
+                scrollDirection =  "UP";
+            else
+                scrollDirection = "STATIC";
+       
             function scroll() {
-                console.log("Current: ", current, "Destination:", destination, "Direction:", scrollDirection);
                 
                 if((current >= destination && scrollDirection === "DOWN") || (current <= destination && scrollDirection === "UP")) {
                     cAF(reqId);   
@@ -174,11 +182,12 @@ window.Nami = (function(){
                     current = current - 5 <= destination ? destination : current - 5;
                     window.scrollTo(0, current);
                 }
-                else {
+                else if(scrollDirection === "DOWN") {
                     current = current + 5 >= destination ? destination : current + 5;
                     window.scrollTo(0, current);
                 }
-                
+                else
+                    return;
                 reqId = rAF(scroll);
             }
             
@@ -205,15 +214,39 @@ window.Nami = (function(){
         
     }
     
+    function updateConfig(opts) {
+        var menuOpts = opts.menu || {};
+        var barOpts = opts.bar || {};
+        var displayOpts = opts.display || {};
+        
+        var menuEl = document.querySelector(namiMenuSelector);
+        var barEl = document.querySelector(namiBarSelector);
+        var displayEl = document.querySelector(namiDisplaySelector);
+        
+        function applyStyleConfig(el, opts) {
+            Object.keys(opts).forEach(function(opt) {
+                el.style[opt] = opts[opt];
+            });    
+        }
+        
+        applyStyleConfig(menuEl, menuOpts);
+        applyStyleConfig(barEl, barOpts);
+        applyStyleConfig(displayEl, displayOpts);
+    }
     
-    Nami.run = run;
+    function destroy() {
+        NamiEvents.deregisterAll();
+    }
     
-    Nami.getItem = getItem;
+    Nami.init = run;
+    Nami.updateConfig = updateConfig;
+    Nami.destroy = destroy;
+    Nami.getItem = getItem; //make private later
     return Nami;
 })();
 
 
-window.NamiEvents = (function(){
+var NamiEvents = (function(){
     var events = {};
     
     //source: http://ejohn.org/projects/flexible-javascript-events/
@@ -241,7 +274,8 @@ window.NamiEvents = (function(){
             trigger: trigger,
             event: event,
             cb: cb,
-            wantedTrigger: wantedTrigger
+            wantedTrigger: wantedTrigger,
+            domEvent: domEvent
         }
         
         //check if the trigger specified already exists for the passed event
@@ -266,24 +300,42 @@ window.NamiEvents = (function(){
         }
     }
     
-    function deregister(event, trigger, domEvent) {
+    function deregister(event, trigger) {
         var listeners = events[event];
         if(!listeners)
             return "No listeners for this event: " + event;
-            
+        
         listeners.forEach(function(listener) {
-            if(listener.trigger === trigger) {
+            if(listener.trigger.toLowerCase() === trigger.toLowerCase()) {
                 var menuItem = Nami.getItem(trigger);
-                console.log("Removing ", event + " listener on", trigger);
-                if(menuItem.wantedTrigger === "document")
-                    removeEvent(document, domEvent, listener.cb);
-                else if(menuItem.wantedTrigger) {
-                    var el = menuItem.el.querySelector(menuItem.wantedTrigger);
-                    removeEvent(el, domEvent, listener.cb);
+                //console.log("Removing ", event + " listener on", trigger);
+                if(listener.wantedTrigger == "document") {
+                    //console.log("Removing document event")
+                    removeEvent(document, listener.domEvent, listener.cb);
                 }
-                listeners.splice(listeners.indexOf(listener), 1);
+                else if(listener.wantedTrigger) {
+                    var el = menuItem.el.querySelector(listener.wantedTrigger);
+                    removeEvent(el, listener.domEvent, listener.cb);
+                }
+                else {
+                    var itemEl = menuItem.el;
+                    removeEvent(itemEl, listener.domEvent, listener.cb);
+                }
             }
         });
+    }
+    
+    function deregisterAll() {
+        var eventKeys = Object.keys(events);
+        for(var index = 0; index < eventKeys.length; index++) {
+            var event = eventKeys[index];
+          
+            events[event] = events[event].map(function(listener) {
+                deregister(event, listener.trigger);
+            });
+            
+            events[event] = [];
+        }
     }
     
     function fire(event, trigger) {
@@ -310,8 +362,9 @@ window.NamiEvents = (function(){
         deregister: deregister,
         events: events,
         preventEventLeak: preventEventLeak,
-        fire: fire
+        fire: fire,
+        deregisterAll: deregisterAll
     }
 })()
 
-window.Nami.run();
+window.Nami.init();
