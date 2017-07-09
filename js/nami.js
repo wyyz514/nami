@@ -2,9 +2,9 @@ window.Nami = (function(){
     var makeArray = function(list) {
         return Array.prototype.slice.call(list);
     };
-    
+
     var active = document.querySelector(".nami-active") ? document.querySelector(".nami-active").getAttribute("data-name") : null;
-    
+
     var navbarHeight = 64; // in px
     var namiMenuSelector = ".nami-menu";
     var namiBarSelector = ".nami-bar";
@@ -13,7 +13,7 @@ window.Nami = (function(){
     var namiMenuItemSelector = ".nami-menu-item";
     var namiSubMenuSelector = ".nami-submenu";
     var namiSubMenuItemSelector = namiSubMenuSelector + " " + ".nami-sub-item";
-    
+
     var Nami = {
         menu: {
             "selected": {
@@ -26,31 +26,31 @@ window.Nami = (function(){
             }
         }
     };
-    
+
     function addItem(key, item) {
         if(!Nami.menu[key]) {
             Nami.menu[key] = item;
         }
         return Nami.menu[key];
     }
-    
+
     function getItem(key) {
         if(Nami.menu[key])
-            return Nami.menu[key];  
+            return Nami.menu[key];
         else
             return key + " could not be found";
     }
 
-    
+
     function extractMenuItems(selector) {
-        var namiEl = document.querySelector(selector);    
+        var namiEl = document.querySelector(selector);
         var menuItems = makeArray(namiEl.querySelectorAll(namiMenuItemSelector));
-        
+
         menuItems.forEach(function(menuItem) {
             createNamiMenuItem(menuItem);
         });
     }
-    
+
     function extractSubMenuItemNames(el) {
         var menuChildren = makeArray(el.querySelector(namiSubMenuSelector).children);
         var subMenu = menuChildren.map(function(child){
@@ -61,20 +61,20 @@ window.Nami = (function(){
         });
         return subMenu;
     }
-    
+
     function createNamiMenuItem(el) {
         var menuItem = {};
         menuItem.text = el.getAttribute("data-name");
         menuItem.scrollTarget = el.getAttribute("data-target") || null;
         menuItem.el = el;
-       
+
         menuItem.next = el.classList.contains("has-submenu") ?
             extractSubMenuItemNames(el): null;
-        
+
         var addedMenuItem = addItem(menuItem.text, menuItem);
         return addedMenuItem;
     }
-    
+
     function toggleMenu(e) {
         preventEventLeak(e);
         var namiMenu = document.querySelector(namiMenuSelector);
@@ -84,11 +84,11 @@ window.Nami = (function(){
         else
             namiMenu.classList.remove("menu-open");
     }
-    
+
     function preventEventLeak(e) {
         NamiEvents.preventEventLeak(e);
-    } 
-    
+    }
+
     function run() {
         extractMenuItems(namiMenuItemsSelector);
         NamiEvents.register("toggleMenu", "selected", "click", toggleMenu);
@@ -96,7 +96,7 @@ window.Nami = (function(){
         var display = document.querySelector(".nami-location");
         display.innerText = active;
     }
-    
+
     function attachMenuItemListeners() {
         //update display in nami bar
         function updateNamiDisplay(e) {
@@ -107,16 +107,16 @@ window.Nami = (function(){
             if(currentText.toLowerCase() === this.text.toLowerCase()) {
                 return;
             }
-            
+
             display.classList.add("updating");
             var textUpdate = this.text;
-            
+
             setTimeout(function(){
-               display.classList.remove("updating"); 
+               display.classList.remove("updating");
                display.innerText = textUpdate;
             }, 500);
         }
-        
+
         //closes NamiMenu
         function closeMenu(e) {
             preventEventLeak(e);
@@ -125,8 +125,8 @@ window.Nami = (function(){
                 namiMenu.classList.remove("menu-open");
             }
         }
-        
-        
+
+
         //toggles submenus by binding to respective menu item (see below)
         function toggleSubMenu(e) {
             preventEventLeak(e);
@@ -136,11 +136,11 @@ window.Nami = (function(){
             else
                 subMenu.classList.remove("menu-open");
         }
-        
+
         function updateDisplayOnScroll(e) {
             preventEventLeak(e);
             var scrollTarget = document.querySelector(this.scrollTarget);
-            
+
             if(scrollTarget) {
                 var offset = scrollTarget.offsetTop;
                 var height = scrollTarget.getBoundingClientRect().height;
@@ -150,7 +150,7 @@ window.Nami = (function(){
                 }
             }
         }
-        
+
         function namiScroll(e) {
             preventEventLeak(e);
             var current = window.scrollY || window.pageYOffset;
@@ -163,21 +163,21 @@ window.Nami = (function(){
             };
             var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
             var reqId;
-            
-            if(current < destination) 
+
+            if(current < destination)
                 scrollDirection = "DOWN";
             else if(current > destination)
                 scrollDirection =  "UP";
             else
                 scrollDirection = "STATIC";
-       
+
             function scroll() {
-                
+
                 if((current >= destination && scrollDirection === "DOWN") || (current <= destination && scrollDirection === "UP")) {
-                    cAF(reqId);   
+                    cAF(reqId);
                     return;
                 }
-                
+
                 if(scrollDirection === "UP") {
                     current = current - 5 <= destination ? destination : current - 5;
                     window.scrollTo(0, current);
@@ -190,12 +190,12 @@ window.Nami = (function(){
                     return;
                 reqId = rAF(scroll);
             }
-            
+
             reqId = rAF(scroll);
         }
-        
+
         var menuKeys = Object.keys(Nami.menu);
-        
+
         //attach the updateDisplay, closeMenu and toggleSubmenu listeners to all menu items except selected which toggles the main menu
         menuKeys.forEach(function(menuKey){
             var menuItem = Nami.getItem(menuKey);
@@ -205,39 +205,39 @@ window.Nami = (function(){
             }
             if(menuItem.text !== "selected") {
                 NamiEvents.register("closeMenu", menuItem.text, "click", closeMenu);
-                
+
                 if(menuItem.next != null) {
                     NamiEvents.register("toggleSubMenu", menuItem.text, "click", toggleSubMenu.bind(menuItem), ".nami-menu-trigger");
                 }
             }
         })
-        
+
     }
-    
+
     function updateConfig(opts) {
         var menuOpts = opts.menu || {};
         var barOpts = opts.bar || {};
         var displayOpts = opts.display || {};
-        
+
         var menuEl = document.querySelector(namiMenuSelector);
         var barEl = document.querySelector(namiBarSelector);
         var displayEl = document.querySelector(namiDisplaySelector);
-        
+
         function applyStyleConfig(el, opts) {
             Object.keys(opts).forEach(function(opt) {
                 el.style[opt] = opts[opt];
-            });    
+            });
         }
-        
+
         applyStyleConfig(menuEl, menuOpts);
         applyStyleConfig(barEl, barOpts);
         applyStyleConfig(displayEl, displayOpts);
     }
-    
+
     function destroy() {
         NamiEvents.deregisterAll();
     }
-    
+
     Nami.init = run;
     Nami.updateConfig = updateConfig;
     Nami.destroy = destroy;
@@ -248,7 +248,7 @@ window.Nami = (function(){
 
 var NamiEvents = (function(){
     var events = {};
-    
+
     //source: http://ejohn.org/projects/flexible-javascript-events/
     function addEvent( obj, type, fn ) {
       if ( obj.attachEvent ) {
@@ -265,11 +265,19 @@ var NamiEvents = (function(){
       } else
         obj.removeEventListener( type, fn, false );
     }
-    
+
+    //string to uniquely identify an event attached to a nami menu item
+    function generateEventIdentifier() {
+      return this.event + this.trigger + this.domEvent + this.wantedTrigger;
+    }
+
     function register(event, trigger, domEvent, cb) {
-        var wantedTrigger = arguments[4] || null;
-        var eventExists = false;
-        events[event] = events[event] ? events[event] : [];
+        //specify a child element of the nami menu item to trigger an event
+        var wantedTrigger = arguments[4] || "";
+        //events['updateDisplay'] = {
+        //'function(){}updateDisplay#elclick#arrow' : {//nami event obj}
+
+        events[event] = events[event] ? events[event] : {};
         var eventOb = {
             trigger: trigger,
             event: event,
@@ -277,88 +285,117 @@ var NamiEvents = (function(){
             wantedTrigger: wantedTrigger,
             domEvent: domEvent
         }
-        
-        //check if the trigger specified already exists for the passed event
-        events[event].forEach(function(listener) {
-            if(listener.trigger === eventOb.trigger && listener.event === eventOb.event) {
-                NamiEvents.deregister(listener.event, listener.trigger); //remove the original event since it is going to be replaced
-            }
-        })
-        
-        events[event].push(eventOb);
-        
+
+        //generate identifier for event to be registered
+        var eventIdentifier = generateEventIdentifier.call(eventOb);
+
+        //if the event is already registered throw an error
+        if(events[event][eventIdentifier]) {
+          return new Error("Event already exists ", JSON.stringify(eventOb, null, 2));
+        }
+        // //check if the trigger specified already exists for the passed event
+        // events[event].forEach(function(listener) {
+        //     if(listener.trigger === eventOb.trigger && listener.event === eventOb.event) {
+        //         NamiEvents.deregister(listener.event, listener.trigger); //remove the original event since it is going to be replaced
+        //     }
+        // })
+
+        //if the event is not registered, add it to the event hash
+        events[event][eventIdentifier] = eventOb;
+        var NamiItem = Nami.getItem(trigger);
+        //add the identifier to the Nami menu item obj
+        NamiItem.eventIdentifiers = NamiItem.eventIdentifiers ? NamiItem.eventIdentifiers : [];
+        NamiItem.eventIdentifiers.push(eventIdentifier);
+
+        //attach listeners
         if(wantedTrigger && wantedTrigger !== "document") {
-            var wantedTriggerEl = Nami.getItem(trigger).el.querySelector(wantedTrigger);
+            var wantedTriggerEl = NamiItem.el.querySelector(wantedTrigger);
             addEvent(wantedTriggerEl, domEvent, eventOb.cb);
         }
         else if(wantedTrigger && wantedTrigger === "document") {
             addEvent(document, domEvent, eventOb.cb);
         }
         else {
-            var specifiedTriggerEl = Nami.getItem(trigger).el;
+            var specifiedTriggerEl = NamiItem.el;
             addEvent(specifiedTriggerEl, domEvent, eventOb.cb);
         }
     }
-    
+
     function deregister(event, trigger) {
+        //all listeners for the Nami event
         var listeners = events[event];
-        if(!listeners)
-            return "No listeners for this event: " + event;
-        
-        listeners.forEach(function(listener) {
-            if(listener.trigger.toLowerCase() === trigger.toLowerCase()) {
-                var menuItem = Nami.getItem(trigger);
-                //console.log("Removing ", event + " listener on", trigger);
-                if(listener.wantedTrigger == "document") {
-                    //console.log("Removing document event")
-                    removeEvent(document, listener.domEvent, listener.cb);
-                }
-                else if(listener.wantedTrigger) {
-                    var el = menuItem.el.querySelector(listener.wantedTrigger);
-                    removeEvent(el, listener.domEvent, listener.cb);
-                }
-                else {
-                    var itemEl = menuItem.el;
-                    removeEvent(itemEl, listener.domEvent, listener.cb);
-                }
+        if(!listeners || listeners == {}) {
+          return new Error("No listeners for this event: " + event);
+        }
+
+        //unique identifiers for all menu items listening on this event
+        var eventIdentifiers = Object.keys(listeners);
+
+        //get the key for the event listener we want to deregister
+        var eventIdentifierToRemove = eventIdentifiers.filter(function(id) {
+          if(id.match(event) && id.match(trigger)) {
+            return id;
+          }
+        })[0];
+
+        var listener = listeners[eventIdentifierToRemove];
+
+        if(listener.trigger.toLowerCase() === trigger.toLowerCase()) {
+            var menuItem = Nami.getItem(trigger);
+            //console.log("Removing ", event + " listener on", trigger);
+            if(listener.wantedTrigger == "document") {
+                //console.log("Removing document event")
+                removeEvent(document, listener.domEvent, listener.cb);
             }
+            else if(listener.wantedTrigger) {
+                var el = menuItem.el.querySelector(listener.wantedTrigger);
+                removeEvent(el, listener.domEvent, listener.cb);
+            }
+            else {
+                var itemEl = menuItem.el;
+                removeEvent(itemEl, listener.domEvent, listener.cb);
+            }
+
+            var identifierIndex = menuItem.eventIdentifiers.indexOf(eventIdentifierToRemove);
+            menuItem.eventIdentifiers.splice(identifierIndex, 1);
+            delete listeners[eventIdentifierToRemove];
+        }
+    }
+
+    function deregisterAll() {
+        //get all the event types
+        var eventKeys = Object.keys(events);
+        //map over the event types and deregister every attached
+        //event
+        eventKeys.map(function(key) {
+          for(var uniqueIdentifier in events[key]) {
+            var eventOb = events[key][uniqueIdentifier];
+            deregister(eventOb.event, eventOb.trigger);
+          }
         });
     }
-    
-    function deregisterAll() {
-        var eventKeys = Object.keys(events);
-        for(var index = 0; index < eventKeys.length; index++) {
-            var event = eventKeys[index];
-          
-            events[event] = events[event].map(function(listener) {
-                deregister(event, listener.trigger);
-            });
-            
-            events[event] = [];
-        }
-    }
-    
+
     function fire(event, trigger) {
         var listeners = events[event];
-        if(!listeners) {
-            return "No listeners for this event: " + event;
+        if(!listeners || listeners == {}) {
+            return new Error("No listeners for this event: " + event);
         }
-        
-        //use hash instead of iterating? O(1) vs O(n) that important here?
-        listeners.forEach(function(listener) {
-            if(listener.trigger === trigger) {
-                listener.cb({
-                    stopPropagation: function noop() {} //since event is manually triggered (simply put, callback specified is invoked), we don't have access to the dom event obj so yes, this is a hack
-                });
-            }
-        })
-    }
+
+        var namiItem = Nami.getItem(trigger);
+
+        var uniqueIdentifier = generateEventIdentifier.call(namiItem);
+
+        listeners[uniqueIdentifier].cb({stopPropagation: function noop(){}
+       /*since event is manually triggered (simply put, callback specified is invoked), we don't have access to the dom event obj so yes, this is a hack*/
+        });
     
+    }
+
     function preventEventLeak(e) {
         e.stopPropagation() || (e.cancelBubble = true);
     }
     return {
-        register: register, 
+        register: register,
         deregister: deregister,
         events: events,
         preventEventLeak: preventEventLeak,
