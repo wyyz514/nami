@@ -275,7 +275,7 @@ var NamiEvents = (function(){
         //specify a child element of the nami menu item to trigger an event
         var wantedTrigger = arguments[4] || "";
         //events['updateDisplay'] = {
-        //'function(){}updateDisplay#elclick#arrow' : {//nami event obj}
+        //'updateDisplay#elclick#arrow' : {//nami event obj}
 
         events[event] = events[event] ? events[event] : {};
         var eventOb = {
@@ -388,7 +388,7 @@ var NamiEvents = (function(){
         listeners[uniqueIdentifier].cb({stopPropagation: function noop(){}
        /*since event is manually triggered (simply put, callback specified is invoked), we don't have access to the dom event obj so yes, this is a hack*/
         });
-    
+
     }
 
     function preventEventLeak(e) {
