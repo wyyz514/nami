@@ -293,12 +293,6 @@ var NamiEvents = (function(){
         if(events[event][eventIdentifier]) {
           return new Error("Event already exists ", JSON.stringify(eventOb, null, 2));
         }
-        // //check if the trigger specified already exists for the passed event
-        // events[event].forEach(function(listener) {
-        //     if(listener.trigger === eventOb.trigger && listener.event === eventOb.event) {
-        //         NamiEvents.deregister(listener.event, listener.trigger); //remove the original event since it is going to be replaced
-        //     }
-        // })
 
         //if the event is not registered, add it to the event hash
         events[event][eventIdentifier] = eventOb;
@@ -339,6 +333,10 @@ var NamiEvents = (function(){
         })[0];
 
         var listener = listeners[eventIdentifierToRemove];
+
+        if(!listener) {
+            return new Error('Could not find event registered on the item');
+        }
 
         if(listener.trigger.toLowerCase() === trigger.toLowerCase()) {
             var menuItem = Nami.getItem(trigger);
