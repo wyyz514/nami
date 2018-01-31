@@ -112,8 +112,8 @@ window.Nami = (function(){
             var textUpdate = this.text;
 
             setTimeout(function(){
-               display.classList.remove("updating");
-               display.innerText = textUpdate;
+                display.classList.remove("updating");
+                display.innerText = textUpdate;
             }, 500);
         }
 
@@ -153,52 +153,52 @@ window.Nami = (function(){
 
         function namiScroll(e) {
             var self = this;
-            return new Promise(function(resolve, reject) {
-                
-                preventEventLeak(e);
-                var current = window.scrollY || window.pageYOffset;
-                var scrollTarget = document.querySelector(self.scrollTarget);
-                var destination = scrollTarget.offsetTop - navbarHeight;
-                var scrollDirection = "STATIC";
-                var clearAnimationLoop = "";
-                var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
-                    clearAnimationLoop = setInterval(fn, 1000/60);
-                };
-                var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
-                var reqId;
 
-                if(current < destination)
-                    scrollDirection = "DOWN";
-                else if(current > destination)
-                    scrollDirection =  "UP";
-                else
-                    scrollDirection = "STATIC";
+            preventEventLeak(e);
+            var current = window.scrollY || window.pageYOffset;
+            var scrollTarget = document.querySelector(self.scrollTarget);
+            var destination = scrollTarget.offsetTop - navbarHeight;
+            var scrollDirection = "STATIC";
+            var clearAnimationLoop = "";
+            var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
+                clearAnimationLoop = setInterval(fn, 1000/60);
+            };
+            var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
+            var reqId;
 
-                function scroll() {
-                    
-                    if(current == destination) {
-                        cAF(reqId);
-                        resolve(self);
-                        return;
-                    }
-                    
-                    if(scrollDirection === "UP") {
-                        current = current - 5 <= destination ? destination : current - 5;
-                        window.scrollTo(0, current);
-                    }
-                    else if(scrollDirection === "DOWN") {
-                        current = current + 5 >= destination ? destination : current + 5;
-                        window.scrollTo(0, current);
-                    }
-                    else {}
-                        
-                    
-                    reqId = rAF(scroll);
+            if(current < destination)
+                scrollDirection = "DOWN";
+            else if(current > destination)
+                scrollDirection =  "UP";
+            else
+                scrollDirection = "STATIC";
+
+            function scroll() {
+
+                if(current == destination) {
+                    cAF(reqId);
+                    console.log(self);
+                    resolve(self);
+                    return;
                 }
-                
-                reqId = rAF(scroll.bind(self));
-            })
 
+                if(scrollDirection === "UP") {
+                    current = current - 5 <= destination ? destination : current - 5;
+                    window.scrollTo(0, current);
+                }
+                else if(scrollDirection === "DOWN") {
+                    current = current + 5 >= destination ? destination : current + 5;
+                    window.scrollTo(0, current);
+                }
+                else {
+                    console.log("here")
+                }
+
+
+                reqId = rAF(scroll);
+            }
+
+            reqId = rAF(scroll.bind(self));
         }
 
         var menuKeys = Object.keys(Nami.menu);
@@ -209,11 +209,7 @@ window.Nami = (function(){
             if(menuItem.scrollTarget) {
                 NamiEvents.register("updateDisplayOnScroll", menuItem.text, "scroll", updateDisplayOnScroll.bind(menuItem), "document");
                 var boundNamiScroll = namiScroll.bind(menuItem);
-                NamiEvents.register("namiScroll", menuItem.text, "click", function(e){
-                    boundNamiScroll(e).then(function(item){
-                        NamiEvents.fire("scrollEnd", item.text);
-                    })
-                });
+                NamiEvents.register("namiScroll", menuItem.text, "click", boundNamiScroll);
             }
             if(menuItem.text !== "selected") {
                 NamiEvents.register("closeMenu", menuItem.text, "click", closeMenu);
@@ -263,24 +259,24 @@ var NamiEvents = (function(){
 
     //source: http://ejohn.org/projects/flexible-javascript-events/
     function addEvent( obj, type, fn ) {
-      if ( obj.attachEvent ) {
-        obj['e'+type+fn] = fn;
-        obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
-        obj.attachEvent( 'on'+type, obj[type+fn] );
-      } else
-        obj.addEventListener( type, fn, false );
+        if ( obj.attachEvent ) {
+            obj['e'+type+fn] = fn;
+            obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
+            obj.attachEvent( 'on'+type, obj[type+fn] );
+        } else
+            obj.addEventListener( type, fn, false );
     }
     function removeEvent( obj, type, fn ) {
-      if ( obj.detachEvent ) {
-        obj.detachEvent( 'on'+type, obj[type+fn] );
-        obj[type+fn] = null;
-      } else
-        obj.removeEventListener( type, fn, false );
+        if ( obj.detachEvent ) {
+            obj.detachEvent( 'on'+type, obj[type+fn] );
+            obj[type+fn] = null;
+        } else
+            obj.removeEventListener( type, fn, false );
     }
 
     //string to uniquely identify an event attached to a nami menu item
     function generateEventIdentifier() {
-      return this.event + this.trigger + this.domEvent + (this.wantedTrigger ? this.wantedTrigger : "");
+        return this.event + this.trigger + this.domEvent + (this.wantedTrigger ? this.wantedTrigger : "");
     }
 
     function register(event, trigger, domEvent, cb) {
@@ -303,7 +299,7 @@ var NamiEvents = (function(){
 
         //if the event is already registered throw an error
         if(events[event][eventIdentifier]) {
-          return new Error("Event already exists ", JSON.stringify(eventOb, null, 2));
+            return new Error("Event already exists ", JSON.stringify(eventOb, null, 2));
         }
 
         //if the event is not registered, add it to the event hash
@@ -331,7 +327,7 @@ var NamiEvents = (function(){
         //all listeners for the Nami event
         var listeners = events[event];
         if(!listeners || listeners == {}) {
-          return new Error("No listeners for this event: " + event);
+            return new Error("No listeners for this event: " + event);
         }
 
         //unique identifiers for all menu items listening on this event
@@ -339,9 +335,9 @@ var NamiEvents = (function(){
 
         //get the key for the event listener we want to deregister
         var eventIdentifierToRemove = eventIdentifiers.filter(function(id) {
-          if(id.match(event) && id.match(trigger)) {
-            return id;
-          }
+            if(id.match(event) && id.match(trigger)) {
+                return id;
+            }
         })[0];
 
         var listener = listeners[eventIdentifierToRemove];
@@ -378,10 +374,10 @@ var NamiEvents = (function(){
         //map over the event types and deregister every attached
         //event
         eventKeys.map(function(key) {
-          for(var uniqueIdentifier in events[key]) {
-            var eventOb = events[key][uniqueIdentifier];
-            deregister(eventOb.event, eventOb.trigger);
-          }
+            for(var uniqueIdentifier in events[key]) {
+                var eventOb = events[key][uniqueIdentifier];
+                deregister(eventOb.event, eventOb.trigger);
+            }
         });
     }
 
@@ -396,10 +392,10 @@ var NamiEvents = (function(){
                 return listeners[key];
             }
         })[0];
-    
+
         listeners[eventKey].cb({stopPropagation: function noop(){}
-       /*since event is manually triggered (simply put, callback specified is invoked), we don't have access to the dom event obj so yes, this is a hack*/
-        });
+                                /*since event is manually triggered (simply put, callback specified is invoked), we don't have access to the dom event obj so yes, this is a hack*/
+                               });
 
     }
 
