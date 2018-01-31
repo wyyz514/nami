@@ -175,6 +175,7 @@ window.Nami = (function(){
 
                 if((current >= destination && scrollDirection === "DOWN") || (current <= destination && scrollDirection === "UP")) {
                     cAF(reqId);
+                    NamiEvents.fire("scrollEnd", this.text)
                     return;
                 }
 
@@ -191,7 +192,7 @@ window.Nami = (function(){
                 reqId = rAF(scroll);
             }
 
-            reqId = rAF(scroll);
+            reqId = rAF(scroll.call(this));
         }
 
         var menuKeys = Object.keys(Nami.menu);
