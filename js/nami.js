@@ -153,52 +153,54 @@ window.Nami = (function(){
 
         function namiScroll(e) {
             var self = this;
+            
+            return new Promise(function(resolve, reject) {
+                
+                preventEventLeak(e);
+                var current = window.scrollY || window.pageYOffset;
+                var scrollTarget = document.querySelector(self.scrollTarget);
+                var destination = scrollTarget.offsetTop - navbarHeight;
+                var scrollDirection = "STATIC";
+                var clearAnimationLoop = "";
+                var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
+                    clearAnimationLoop = setInterval(fn, 1000/60);
+                };
+                var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
+                var reqId;
 
-            preventEventLeak(e);
-            var current = window.scrollY || window.pageYOffset;
-            var scrollTarget = document.querySelector(self.scrollTarget);
-            var destination = scrollTarget.offsetTop - navbarHeight;
-            var scrollDirection = "STATIC";
-            var clearAnimationLoop = "";
-            var rAF = requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || msRequestAnimationFrame || function (fn) {
-                clearAnimationLoop = setInterval(fn, 1000/60);
-            };
-            var cAF = cancelAnimationFrame || webkitCancelAnimationFrame || mozCancelAnimationFrame || msCancelRequestAnimationFrame || clearAnimationLoop;
-            var reqId;
+                if(current < destination)
+                    scrollDirection = "DOWN";
+                else if(current > destination)
+                    scrollDirection =  "UP";
+                else
+                    scrollDirection = "STATIC";
 
-            if(current < destination)
-                scrollDirection = "DOWN";
-            else if(current > destination)
-                scrollDirection =  "UP";
-            else
-                scrollDirection = "STATIC";
+                function scroll() {
 
-            function scroll() {
+                    if(current == destination) {
+                        cAF(reqId);
+                        resolve(self);
+                        return;
+                    }
 
-                if(current == destination) {
-                    cAF(reqId);
-                    console.log(self);
-                    resolve(self);
-                    return;
+                    if(scrollDirection === "UP") {
+                        current = current - 5 <= destination ? destination : current - 5;
+                        window.scrollTo(0, current);
+                    }
+                    else if(scrollDirection === "DOWN") {
+                        current = current + 5 >= destination ? destination : current + 5;
+                        window.scrollTo(0, current);
+                    }
+                    else {
+                        console.log("here hehehe");
+                    }
+
+
+                    reqId = rAF(scroll);
                 }
 
-                if(scrollDirection === "UP") {
-                    current = current - 5 <= destination ? destination : current - 5;
-                    window.scrollTo(0, current);
-                }
-                else if(scrollDirection === "DOWN") {
-                    current = current + 5 >= destination ? destination : current + 5;
-                    window.scrollTo(0, current);
-                }
-                else {
-                    console.log("here")
-                }
-
-
-                reqId = rAF(scroll);
-            }
-
-            reqId = rAF(scroll.bind(self));
+                reqId = rAF(scroll.bind(self));
+            });
         }
 
         var menuKeys = Object.keys(Nami.menu);
@@ -209,7 +211,11 @@ window.Nami = (function(){
             if(menuItem.scrollTarget) {
                 NamiEvents.register("updateDisplayOnScroll", menuItem.text, "scroll", updateDisplayOnScroll.bind(menuItem), "document");
                 var boundNamiScroll = namiScroll.bind(menuItem);
-                NamiEvents.register("namiScroll", menuItem.text, "click", boundNamiScroll);
+                NamiEvents.register("namiScroll", menuItem.text, "click", function (e){
+                    boundNamiScroll(e).then(function(item){
+                        NamiEvents.fire("scrollEnd", item.text);
+                    })
+                });
             }
             if(menuItem.text !== "selected") {
                 NamiEvents.register("closeMenu", menuItem.text, "click", closeMenu);
@@ -308,18 +314,20 @@ var NamiEvents = (function(){
         //add the identifier to the Nami menu item obj
         NamiItem.eventIdentifiers = NamiItem.eventIdentifiers ? NamiItem.eventIdentifiers : [];
         NamiItem.eventIdentifiers.push(eventIdentifier);
-
+        
         //attach listeners
-        if(wantedTrigger && wantedTrigger !== "document") {
-            var wantedTriggerEl = NamiItem.el.querySelector(wantedTrigger);
-            addEvent(wantedTriggerEl, domEvent, eventOb.cb);
-        }
-        else if(wantedTrigger && wantedTrigger === "document") {
-            addEvent(document, domEvent, eventOb.cb);
-        }
-        else {
-            var specifiedTriggerEl = NamiItem.el;
-            addEvent(specifiedTriggerEl, domEvent, eventOb.cb);
+        if(domEvent) {
+            if(wantedTrigger && wantedTrigger !== "document") {
+                var wantedTriggerEl = NamiItem.el.querySelector(wantedTrigger);
+                addEvent(wantedTriggerEl, domEvent, eventOb.cb);
+            }
+            else if(wantedTrigger && wantedTrigger === "document") {
+                addEvent(document, domEvent, eventOb.cb);
+            }
+            else {
+                var specifiedTriggerEl = NamiItem.el;
+                addEvent(specifiedTriggerEl, domEvent, eventOb.cb);
+            }
         }
     }
 
@@ -393,9 +401,9 @@ var NamiEvents = (function(){
             }
         })[0];
 
-        listeners[eventKey].cb({stopPropagation: function noop(){}
+        ( listeners[eventKey] && listeners[eventKey].cb({stopPropagation: function noop(){}
                                 /*since event is manually triggered (simply put, callback specified is invoked), we don't have access to the dom event obj so yes, this is a hack*/
-                               });
+                               }));
 
     }
 
